@@ -14,10 +14,12 @@ class _HomePageState extends State<HomePage> {
   var dio = Dio();
   bool isLoading = true;
   var selectedCurrency;
+  int index=0;
 
   Future filex() async {
     //final response = await dio.get('https://google.com');
-    final response = await dio.get('https://api.frankfurter.app'); //{"docs":"https://www.frankfurter.app/docs"}
+    final response = await dio.get(
+        'https://api.frankfurter.app'); //{"docs":"https://www.frankfurter.app/docs"}
     //response = await dio.download('https://www.google.com/', './xx.html');
     //response = await dio.download("storage/emulated/0/Android/data/com.example.directory/files/", './counter.txt');
     //response = await dio.download("c:\\test\\", './myfile.txt');
@@ -28,48 +30,90 @@ class _HomePageState extends State<HomePage> {
 
   Future filexMap() async {
     List<String> currencies = [];
-    Response response = await dio.get(
-        'https://api.frankfurter.app'); //{"docs":"https://www.frankfurter.app/docs"}
+    //Response response = await dio.get("https://api.frankfurter.app"); //{"docs":"https://www.frankfurter.app/docs"}
+    Response response = await dio.get("https://jsonplaceholder.typicode.com/todos/1");
     if (response.statusCode == 200) {
-      // print(response.runtimeType); //Response<dynamic>
-      // print(response.statusMessage); //OK
-      // print(response.data); //{docs: https://www.frankfurter.app/docs}
-      // print(response); //{"docs":"https://www.frankfurter.app/docs"}
-      // print(response.realUri); //https://api.frankfurter.app
-      // print(response.toString()); //{"docs":"https://www.frankfurter.app/docs"}
-      // print(response.data.toString()); //{docs: https://www.frankfurter.app/docs}
-     // print(response.headers); // connection: keep-alive
-      //print(response.extra.keys.last);
-      //print(response.extra.length);
-      // print(response.data as Map);
-      var result=response.data as Map;
-      // print(result.length);  // 1
-      // print(result.isEmpty);  //false
-      // print(result.keys.first); //docs
-      // print(result.values.first);  // https://www.frankfurter.app/docs
-      result.forEach((key, value) {
-        print(key+'    '+value);
-        currencies.add(key);
-        print(currencies.length);
-        String key35=key.toString();
-        currencies.add(key35);
-        print(currencies.length);
-        currencies.add('value');
-        print(currencies.length);
-      });
-      /*(response.data as Map).forEach((key, value) {
+    print(response.statusMessage);
+    print(response.data);
+    (response.data as Map).forEach((key, value) {
+     // print(key+'  '+value.runtimeType.toString());
+      if(key=='id'){
+        print(value);
+      }
+    });
+    }
+  }
+
+  Future fileyMap() async {
+    List<dynamic> currencies = [];
+    //Response response = await dio.get("https://api.frankfurter.app"); //{"docs":"https://www.frankfurter.app/docs"}
+    Response response = await dio.get('https://jsonplaceholder.typicode.com/posts/1');
+    if (response.statusCode == 200) {
+      print(response.statusMessage);
+      //print(response.data);
+      (response.data as Map).forEach((key, value) {
         print(key);
-        //currencies.add(key);
-      });*/
-      //print(response.toString());
-      // print(response.data);
+        if(value is int){
+          print(value.toString());
+          currencies.add(value);
+        }
+        else if(value is String){
+          print(value);
+          currencies.add(value);
+        }
+      });
+      print(currencies.length);
+      //print(currencies.last);
+      print(currencies.elementAt(2));
+    }
+  }
+
+  Future filezMap() async {
+    List<dynamic> currencies = [];
+    //Response response = await dio.get("https://api.frankfurter.app"); //{"docs":"https://www.frankfurter.app/docs"}
+    Response response = await dio.get('https://jsonplaceholder.typicode.com/posts/1/comments');
+    if (response.statusCode == 200) {
+      print(response.statusMessage);
+      //print(response.runtimeType);
+     //print((response.data as List).first);
+     //print((response.data as List).last);
+     List list=response.data as List;
+     print(list.length);
+     //print(list.elementAt(0));
+      (list.elementAt(0) as Map).forEach((key, value) {
+        if(value is int) {
+          print(key.toString() + '  ' + value.toString());
+        }else if(value is String){
+          print(key+'  '+value);
+        }
+      });
+    }
+  }
+
+
+  Future filewMap() async {
+    List<dynamic> currencies = [];
+    //Response response = await dio.get("https://api.frankfurter.app"); //{"docs":"https://www.frankfurter.app/docs"}
+    Response response = await dio.get('https://jsonplaceholder.typicode.com/posts/1/comments');
+    if (response.statusCode == 200) {
+      print(response.statusMessage);
+      //print(response.runtimeType);
+      //print((response.data as List).first);
+      //print((response.data as List).last);
+      List list=response.data as List;
+      print(list.length);
+      //print(list.elementAt(0));
+      for(int i=0; i<list.length; i++){
+      (list.elementAt(i) as Map).forEach((key, value) {
+        print('$key   $value');
+      });}
     }
   }
 
   @override
   void initState() {
     super.initState();
-    filexMap();
+    filewMap();
     /*BaseOptions options = BaseOptions();
     options.baseUrl = 'https://api.frankfurter.app/';
     dio = new Dio(options);*/

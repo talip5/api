@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
 
   Future writeDownload() async {
     Response response = await dio.get('https://www.w3.org/TR/PNG/iso_8859-1.txt',
-    //Response response = await dio.get('https://www.w3.org/People/mimasa/test/imgformat/img/w3c_home.jpg',
+      //Response response = await dio.get('https://www.w3.org/People/mimasa/test/imgformat/img/w3c_home.jpg',
       //onReceiveProgress: showDownloadProgress,
       //Received data with List<int>
       options: Options(
@@ -52,11 +52,11 @@ class _HomePageState extends State<HomePage> {
     dirPath=directory!.path;
     savePath='$dirPath/Denemetxt.txt';
     File file=File(savePath);
-   var raf=file.openSync(mode: FileMode.read);
-   //final contentx=await raf.readAsStringSync();
+    var raf=file.openSync(mode: FileMode.read);
+    //final contentx=await raf.readAsStringSync();
     //final contentx=await raf.read(2000);
     final contentx=await raf.readSync(100);
-   raf.close();
+    raf.close();
     print('Dosya Okundu');
     print(contentx.length);
     print(contentx);
@@ -71,7 +71,7 @@ class _HomePageState extends State<HomePage> {
     var raf=file.openSync(mode: FileMode.read);
     //final contentx=await file.readAsStringSync();
     //final contentx=await file.readAsLinesSync().first;
-   record=await file.readAsLinesSync().length;  // 104
+    record=await file.readAsLinesSync().length;  // 104
     //final contentx=await file.readAsLinesSync().elementAt(0);
     for(int i=0; i<record; i++){
       final contentx=await file.readAsLinesSync().elementAt(i);
@@ -100,9 +100,9 @@ class _HomePageState extends State<HomePage> {
       print(response.statusMessage);
       var text=response.data as String;
       //print(text);
-     // var newString=text.substring(text.length-1400);
+      // var newString=text.substring(text.length-1400);
       //var newString=text.substring(1000);
-     // print(newString);
+      // print(newString);
     }
   }
 
@@ -110,9 +110,9 @@ class _HomePageState extends State<HomePage> {
 
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-     //readDownload();
+    //readDownload();
   }
 
   List<String> currencies = [];
@@ -147,10 +147,10 @@ class _HomePageState extends State<HomePage> {
                 Text(record.toString()),
                 ElevatedButton(
                     onPressed: () async{
-                     list35=await readDownload();
-                     print(list35.length);
+                      list35=await readDownload();
+                      print(list35.length);
                       print('API Test');
-                     //readLinex=list35.first;
+                      readLinex=list35.first;
                     },
                     child: Text("API Test")
                 ),
@@ -159,7 +159,7 @@ class _HomePageState extends State<HomePage> {
                   child: ListView.builder(
                       itemCount:list35.length ,
                       itemBuilder: (BuildContext context,int index){
-                       readLinex=list35[index].toString();
+                        readLinex=list35[index].toString();
                         return ListTile(
                           title: Card(child: Text(readLinex)),
                         );

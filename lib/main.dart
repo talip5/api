@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
+import 'dart:math';
 
 void main() {
   runApp(HomePage());
@@ -15,68 +16,30 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   var dio = Dio();
-  bool isLoading = true;
-  var selectedCurrency;
-  String dirPath='';
-  String savePath='';
-  int record=0;
-  String line='';
-  String readLinex='';
-  List<String> list35=[];
-
-  Future writeDownload() async {
-    Response response = await dio.get('https://www.w3.org/TR/PNG/iso_8859-1.txt',
-    //Response response = await dio.get('https://www.w3.org/People/mimasa/test/imgformat/img/w3c_home.jpg',
-      //onReceiveProgress: showDownloadProgress,
-      //Received data with List<int>
-      options: Options(
-          responseType: ResponseType.bytes,
-          followRedirects: false,
-          validateStatus: (status) {
-            return status! < 500;
-          }),
-    );
-    Directory? directory= await getExternalStorageDirectory();
-    dirPath=directory!.path;
-    savePath='$dirPath/Denemetxt.txt';
-    File file=File(savePath);
-    var raf=file.openSync(mode: FileMode.write);
-    //response.data is List<int>
-    raf.writeFromSync(response.data);
-    await raf.close();
-    print('kayit yapildi');
-  }
-
-  Future readDownload1() async {
-    Directory? directory= await getExternalStorageDirectory();
-    dirPath=directory!.path;
-    savePath='$dirPath/Denemetxt.txt';
-    File file=File(savePath);
-   var raf=file.openSync(mode: FileMode.read);
-   //final contentx=await raf.readAsStringSync();
-    //final contentx=await raf.read(2000);
-    final contentx=await raf.readSync(100);
-   raf.close();
-    print('Dosya Okundu');
-    print(contentx.length);
-    print(contentx);
-  }
+  String dirPath = '';
+  String savePath = '';
+  String savePathCopy = '';
+  int record = 0;
+  String line = '';
+  String readLinex = '';
+  List<String> list35 = [];
+  int? randomNumber;
 
   Future<List<String>> readDownload() async {
-    List<String> list=[];
-    Directory? directory= await getExternalStorageDirectory();
-    dirPath=directory!.path;
-    savePath='$dirPath/Denemetxt.txt';
-    File file=File(savePath);
-    var raf=file.openSync(mode: FileMode.read);
+    List<String> list = [];
+    Directory? directory = await getExternalStorageDirectory();
+    dirPath = directory!.path;
+    savePath = '$dirPath/Denemetxt.txt';
+    File file = File(savePath);
+    var raf = file.openSync(mode: FileMode.read);
     //final contentx=await file.readAsStringSync();
     //final contentx=await file.readAsLinesSync().first;
-   record=await file.readAsLinesSync().length;  // 104
+    record = await file.readAsLinesSync().length; // 104
     //final contentx=await file.readAsLinesSync().elementAt(0);
-    for(int i=0; i<record; i++){
-      final contentx=await file.readAsLinesSync().elementAt(i);
+    for (int i = 0; i < record; i++) {
+      final contentx = await file.readAsLinesSync().elementAt(i);
       setState(() {
-        line=contentx.toString();
+        line = contentx.toString();
       });
       print(contentx);
       list.add(contentx);
@@ -88,50 +51,102 @@ class _HomePageState extends State<HomePage> {
     return list;
   }
 
-  Future pathx() async{
-    Directory? directory= await getExternalStorageDirectory();
-    print(directory);
+  Future writeLine() async {
+    List<String> list = [];
+    Directory? directory = await getExternalStorageDirectory();
+    dirPath = directory!.path;
+    //savePath = '$dirPath/Denemetxt.txt';
+    savePath = '$dirPath/DenemetxtCopy1.txt';
+    File file = File(savePath);
+    var raf = file.openSync(mode: FileMode.read);
+    record = await file.readAsLinesSync().length; // 104
+    //final contentx = await file.readAsLinesSync().elementAt(0);
+    raf.closeSync();
+    print('Dosya Okundu');
+    print(record);
   }
 
-  Future filex() async {
-    Response response = await dio.get('https://www.w3.org/TR/PNG/iso_8859-1.txt');
-    if(response.statusCode==200) {
-      //print(response.data);
-      print(response.statusMessage);
-      var text=response.data as String;
-      //print(text);
-     // var newString=text.substring(text.length-1400);
-      //var newString=text.substring(1000);
-     // print(newString);
+  Future fileCopy() async {
+    Directory? directory = await getExternalStorageDirectory();
+    dirPath = directory!.path;
+    savePath = '$dirPath/Denemetxt.txt';
+    savePathCopy = '$dirPath/DenemetxtCopy5.txt';
+    File file = File(savePath);
+    var raf = file.openSync(mode: FileMode.read);
+    //record = await file.readAsLinesSync().length; // 104
+    //final contentx = await file.readAsLinesSync().elementAt(0);
+    await file.copy(savePathCopy);
+    raf.closeSync();
+    print('Dosya Okundu');
+    //print(contentx);
+  }
+
+  Future<dynamic> fileAppend1() async {
+    Directory? directory = await getExternalStorageDirectory();
+    dirPath = directory!.path;
+    savePath = '$dirPath/DenemetxtCopy1.txt';
+    File file = File(savePath);
+    var raf = file.openSync(mode: FileMode.read);
+    String lineAppend='A';
+    //raf.writeStringSync(lineAppend);
+    //var count1=await file.length();
+   //file.writeAsStringSync(lineAppend, mode:FileMode.write);
+     file.writeAsString(lineAppend + '\n',
+        mode: FileMode.append, flush: true);
+    //record = await file.readAsLinesSync().length; // 104
+    //final contentx = await file.readAsLinesSync().elementAt(0);
+    raf.closeSync();
+    print("Dosya'ya yazildi");
+    //print(count1);
+  }
+
+  Future<dynamic> fileAppend() async {
+    Directory? directory = await getExternalStorageDirectory();
+    dirPath = directory!.path;
+    savePath = '$dirPath/DenemetxtCopy1.txt';
+    File file = File(savePath);
+    //var raf = file.openSync(mode: FileMode.read);
+    List letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k"];
+    for (int i = 0; i < 10; i++) {
+      await file.writeAsString("${letters[i]}", mode: FileMode.append);
     }
+    //String lineAppend='deneme3535 =========================';
+    //raf.writeStringSync(lineAppend);
+    //var count1=await file.length();
+    //var count1=await file.readAsLinesSync().length;
+    //record = await file.readAsLinesSync().length; // 104
+    //final contentx = await file.readAsLinesSync().elementAt(0);
+    //raf.closeSync();
+    print("Dosya'ya yazildi");
+    //print(count1);
   }
 
+  Future fileCreate(String randomNumberStringx) async {
+    Directory? directory = await getExternalStorageDirectory();
+    dirPath = directory!.path;
+    savePathCopy = '$dirPath/Deneme$randomNumberStringx.txt';
+    File file = File(savePathCopy);
+    //var raf = file.openSync(mode: FileMode.read);
+    file.createSync();
+    print('fileCreate');
+    print(file.path);
+  }
 
-
+  Future fileDelete() async {
+    Directory? directory = await getExternalStorageDirectory();
+    dirPath = directory!.path;
+    savePathCopy = '$dirPath/DenemetxtCopy.txt';
+    File file = File(savePathCopy);
+    file.deleteSync(recursive: false);
+    print('$savePathCopy dosyasi silindi');
+  }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-     //readDownload();
+    //readDownload();
+    random35();
   }
-
-  List<String> currencies = [];
-
-  /*Future<List> getCurrencies()async{
-    setState(() {
-      isLoading;
-    });
-    Response result=await dio.get("currencies");
-    if(result.statusCode==200){
-      (result.data as Map).forEach((key,value){
-        currencies.add(key);
-      });
-    }
-    setState((){
-      bool isLoading = false;
-    });
-    }
-  */
 
   @override
   Widget build(BuildContext context) {
@@ -143,23 +158,73 @@ class _HomePageState extends State<HomePage> {
           body: Center(
             child: Column(
               children: [
-                Text('API35'),
+                Text(randomNumber.toString()),
                 Text(record.toString()),
                 ElevatedButton(
-                    onPressed: () async{
-                     list35=await readDownload();
-                     print(list35.length);
-                      print('API Test');
-                     //readLinex=list35.first;
+                    onPressed: () async {
+                      list35 = await readDownload();
+                      print(list35.length);
+                      print('ReadLine');
+                      //readLinex=list35.first;
                     },
-                    child: Text("API Test")
-                ),
+                    child: Text("ReadLine")),
                 Text(list35.length.toString()),
+                ElevatedButton(
+                    onPressed: () async {
+                      await writeLine();
+                      //print(list35.length);
+                      print('Write Line');
+                      //readLinex=list35.first;
+                    },
+                    child: Text("Write Line")
+                ),
+                ElevatedButton(
+                    onPressed: () async {
+                      setState(() {});
+                      var randomNumber1=random35();
+                      randomNumber=randomNumber1;
+                      String randomNumberString=randomNumber.toString();
+                      await fileCreate(randomNumberString);
+                      print('File Create');
+                    },
+                    child: Text("File Create")
+                ),
+                ElevatedButton(
+                    onPressed: () async {
+                      await fileCopy();
+                      print('File Copy');
+                    },
+                    child: Text("File Copy")
+                ),
+                ElevatedButton(
+                    onPressed: () async {
+                      await fileAppend1();
+                      print('File Append');
+                    },
+                    child: Text("File Append")
+                ),
+                ElevatedButton(
+                    onPressed: () async {
+                      await fileDelete();
+                      print('File Delete');
+                    },
+                    child: Text("File Delete")
+                ),
+                ElevatedButton(
+                    onPressed: () {
+                      setState(() {});
+                      var randomNumber1=random35();
+                      randomNumber=randomNumber1;
+                      print(randomNumber);
+                      print(randomNumber.runtimeType);
+                    },
+                    child: Text("Random")
+                ),
                 Expanded(
                   child: ListView.builder(
-                      itemCount:list35.length ,
-                      itemBuilder: (BuildContext context,int index){
-                       readLinex=list35[index].toString();
+                      itemCount: list35.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        readLinex = list35[index].toString();
                         return ListTile(
                           title: Card(child: Text(readLinex)),
                         );
@@ -171,5 +236,12 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+ int? random35() {
+Random random=new Random();
+  randomNumber=random.nextInt(10000);
+  //print(randomNumber);
+  return randomNumber;
   }
 }
